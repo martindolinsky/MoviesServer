@@ -13,6 +13,9 @@ import java.util.List;
 @RestController
 public class DemoApplication {
 
+	public static final String URL = "jdbc:mysql://localhost:8889/movieDatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+	public static final String root = "root";
+
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
