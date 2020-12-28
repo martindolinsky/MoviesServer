@@ -1,37 +1,16 @@
 package com.example.demo.repository.users;
 
-import com.example.demo.DemoApplication;
+import com.example.demo.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
-/**
- * @author Martin Dolinsky
- */
 @Repository
-public class UserRepository {
+public interface UserRepository extends JpaRepository<User, Long> {
+	Optional<User> findByUsername(String username);
 
+	Boolean existsByUsername(String username);
 
-	public List<String> getAllUsers() {
-		String t = "";
-		List<String> list = new ArrayList<>();
-
-		try {
-			Connection connection = DriverManager.getConnection(DemoApplication.URL, DemoApplication.root, DemoApplication.root);
-
-			PreparedStatement statement = connection.prepareStatement("select * from Users");
-			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				t = "User: " + rs.getString(2) + " Email:  " + rs.getString(3);
-				list.add(t);
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-
+	Boolean existsByEmail(String email);
 }
