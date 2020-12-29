@@ -29,7 +29,7 @@ public class TvSeriesRepository {
 						rs.getString("titleSK"), rs.getInt("year"), rs.getString("director"),
 						rs.getString("actors"), rs.getString("description"), rs.getString("genre"),
 						rs.getString("secondTitleEN"), rs.getString("secondTitleSK"), rs.getString("src"),
-						rs.getString("srcImg"), rs.getString("data-title"));
+						rs.getString("srcImg"), rs.getString("dataTitle"));
 
 				list.add(tvSeries);
 			}
@@ -40,6 +40,38 @@ public class TvSeriesRepository {
 		return list;
 	}
 
+	public TvSeries getSerialById(int id) {
+		TvSeries tvSeries = new TvSeries();
+
+		try {
+			Connection connection = DriverManager.getConnection(
+					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
+
+			PreparedStatement statement = connection.prepareStatement("select * from tvseries where serialID = ?");
+			statement.setInt(1, id);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				tvSeries = new TvSeries();
+				tvSeries.setSerialID(id);
+				tvSeries.setTitleEN(rs.getString("titleEN"));
+				tvSeries.setTitleSK(rs.getString("titleSK"));
+				tvSeries.setGenre(rs.getString("genre"));
+				tvSeries.setYear(rs.getInt("year"));
+				tvSeries.setDirector(rs.getString("director"));
+				tvSeries.setActors(rs.getString("actors"));
+				tvSeries.setDescription(rs.getString("description"));
+				tvSeries.setSecondTitleEN(rs.getString("secondTitleEN"));
+				tvSeries.setSecondTitleSK(rs.getString("secondTitleSK"));
+				tvSeries.setSrc(rs.getString("src"));
+				tvSeries.setSrcImg(rs.getString("srcImg"));
+				tvSeries.setDataTitle(rs.getString("dataTitle"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tvSeries;
+	}
+
 	public boolean createSerial(TvSeries serial) {
 
 		try {
@@ -48,7 +80,7 @@ public class TvSeriesRepository {
 
 			PreparedStatement statement = connection.prepareStatement(
 					"INSERT INTO `tvseries` (`titleEN`, `titleSK`, `year`, `director`, `actors`," +
-							" `description`, `genre`, `secondTitleEN`, `secondTitleSK`, `src`, `srcImg`, `data-title`) " +
+							" `description`, `genre`, `secondTitleEN`, `secondTitleSK`, `src`, `srcImg`, `dataTitle`) " +
 							"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			statement.setString(1, serial.getTitleEN());
@@ -87,7 +119,7 @@ public class TvSeriesRepository {
 			PreparedStatement statement = connection.prepareStatement(
 					"UPDATE tvseries SET titleEN = ?, titleSK = ?, genre = ?, year = ?, director = ?, actors = ?, " +
 							"description = ?, secondTitleEN = ?, secondTitleSK = ?, src = ?, srcImg = ?, " +
-							"`data-title` = ? WHERE serialID = ?");
+							"`dataTitle` = ? WHERE serialID = ?");
 
 			statement.setString(1, serial.getTitleEN());
 			statement.setString(2, serial.getTitleSK());
@@ -106,7 +138,7 @@ public class TvSeriesRepository {
 			int executeUpdate = statement.executeUpdate();
 
 			if (executeUpdate == 1) {
-				System.out.println("Serial with ID: " + id + " is updaded: " +
+				System.out.println("Serial with ID: " + id + " is updated: " +
 						serial.getTitleEN() + " " + serial.getSecondTitleEN());
 				return true;
 			}

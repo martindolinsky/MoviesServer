@@ -27,6 +27,11 @@ public class TvSeriesController {
 		return tvSeriesRepository.getAllTvSeries();
 	}
 
+	@GetMapping(path = "/{id}")
+	public TvSeries getSerialById(@PathVariable int id) {
+		return tvSeriesRepository.getSerialById(id);
+	}
+
 	@DeleteMapping(path = "/delete/{id}")
 	public ResponseEntity<?> deleteSerialById(@PathVariable int id) throws JSONException {
 		JSONObject response = new JSONObject();
@@ -53,7 +58,7 @@ public class TvSeriesController {
 					job.getString("titleEN"), job.getString("titleSK"), job.getInt("year"),
 					job.getString("director"), job.getString("actors"), job.getString("description"),
 					job.getString("genre"), job.getString("secondTitleEN"), job.getString("secondTitleSK"),
-					job.getString("src"), job.getString("srcImg"), job.getString("data-title"));
+					job.getString("src"), job.getString("srcImg"), job.getString("dataTitle"));
 			boolean b = tvSeriesRepository.createSerial(serial);
 			if (b) {
 				response.put("success", "Serial created with title: " + serial.getTitleEN());
@@ -80,7 +85,7 @@ public class TvSeriesController {
 					job.getString("titleEN"), job.getString("titleSK"), job.getInt("year"),
 					job.getString("director"), job.getString("actors"), job.getString("description"),
 					job.getString("genre"), job.getString("secondTitleEN"), job.getString("secondTitleSK"),
-					job.getString("src"), job.getString("srcImg"), job.getString("data-title"));
+					job.getString("src"), job.getString("srcImg"), job.getString("dataTitle"));
 			boolean b = tvSeriesRepository.updateSerialById(serial, id);
 			if (b) {
 				response.put("success", "Serial updated with ID: " + id);

@@ -41,7 +41,7 @@ public class MovieRepository {
 				movie.setSrcImg(rs.getString("srcImg"));
 				movie.setLength(rs.getInt("length"));
 				movie.setImdbSrc(rs.getString("imdbSrc"));
-				movie.setDataTitle(rs.getString("data-title"));
+				movie.setDataTitle(rs.getString("dataTitle"));
 
 				list.add(movie);
 			}
@@ -50,6 +50,40 @@ public class MovieRepository {
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	public Movie getMovieById(int id) {
+		Movie movie = new Movie();
+
+		try {
+			Connection connection = DriverManager.getConnection(
+					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
+
+			PreparedStatement statement = connection.prepareStatement("select * from movies where movieID = ?");
+			statement.setInt(1, id);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				movie = new Movie();
+				movie.setMovieID(id);
+				movie.setTitleEN(rs.getString("titleEN"));
+				movie.setTitleSK(rs.getString("titleSK"));
+				movie.setGenre(rs.getString("genre"));
+				movie.setYear(rs.getInt("year"));
+				movie.setDirector(rs.getString("director"));
+				movie.setActors(rs.getString("actors"));
+				movie.setDescription(rs.getString("description"));
+				movie.setSecondTitleEN(rs.getString("secondTitleEN"));
+				movie.setSecondTitleSK(rs.getString("secondTitleSK"));
+				movie.setSrc(rs.getString("src"));
+				movie.setSrcImg(rs.getString("srcImg"));
+				movie.setLength(rs.getInt("length"));
+				movie.setImdbSrc(rs.getString("imdbSrc"));
+				movie.setDataTitle(rs.getString("dataTitle"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return movie;
 	}
 
 	public boolean createMovie(Movie movie) {
@@ -61,7 +95,7 @@ public class MovieRepository {
 			PreparedStatement statement = connection.prepareStatement(
 					"INSERT INTO `movies`(`titleEN`, `titleSK`, `genre`, `year`, `director`, `actors`, " +
 							"`description`, `secondTitleEN`, `secondTitleSK`, `src`, `srcImg`, `length`, `imdbSrc`, " +
-							"`data-title`)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+							"`dataTitle`)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			statement.setString(1, movie.getTitleEN());
 			statement.setString(2, movie.getTitleSK());
@@ -101,7 +135,7 @@ public class MovieRepository {
 			PreparedStatement statement = connection.prepareStatement(
 					"UPDATE movies SET titleEN = ?, titleSK = ?, genre = ?, year = ?, director = ?, actors = ?, " +
 							"description = ?, secondTitleEN = ?, secondTitleSK = ?, src = ?, srcImg = ?, length = ?, " +
-							"imdbSrc = ?, `data-title` = ? WHERE movieID = ?");
+							"imdbSrc = ?, `dataTitle` = ? WHERE movieID = ?");
 
 			statement.setString(1, movie.getTitleEN());
 			statement.setString(2, movie.getTitleSK());

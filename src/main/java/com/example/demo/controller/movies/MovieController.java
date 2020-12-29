@@ -27,6 +27,11 @@ public class MovieController {
 		return movieRepository.getAllMovies();
 	}
 
+	@GetMapping(path = "/{id}")
+	public Movie getMovieById(@PathVariable int id) {
+		return movieRepository.getMovieById(id);
+	}
+
 	@DeleteMapping(path = "/delete/{id}")
 	public ResponseEntity<?> deleteMovieById(@PathVariable int id) throws JSONException {
 		JSONObject response = new JSONObject();
@@ -54,7 +59,7 @@ public class MovieController {
 					job.getString("genre"), job.getInt("year"), job.getString("director"),
 					job.getString("actors"), job.getString("description"), job.getString("secondTitleEN"),
 					job.getString("secondTitleSK"), job.getString("src"), job.getString("srcImg"),
-					job.getInt("length"), job.getString("imdbSrc"), job.getString("data-title"));
+					job.getInt("length"), job.getString("imdbSrc"), job.getString("dataTitle"));
 			boolean b = movieRepository.createMovie(movie);
 			if (b) {
 				response.put("success", "Movie created with title: " + movie.getTitleEN());
@@ -82,7 +87,7 @@ public class MovieController {
 					job.getString("genre"), job.getInt("year"), job.getString("director"),
 					job.getString("actors"), job.getString("description"), job.getString("secondTitleEN"),
 					job.getString("secondTitleSK"), job.getString("src"), job.getString("srcImg"),
-					job.getInt("length"), job.getString("imdbSrc"), job.getString("data-title"));
+					job.getInt("length"), job.getString("imdbSrc"), job.getString("dataTitle"));
 			boolean b = movieRepository.updateMovieById(movie, id);
 			if (b) {
 				response.put("success", "Movie updated with ID: " + id);

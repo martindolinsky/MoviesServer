@@ -38,7 +38,7 @@ public class Movie {
 	private int length;
 	@Column(name = "imdbSrc")
 	private String imdbSrc;
-	@Column(name = "data-title")
+	@Column(name = "dataTitle")
 	private String dataTitle;
 
 	public Movie
