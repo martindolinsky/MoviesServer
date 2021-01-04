@@ -24,8 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -156,10 +154,8 @@ class UserRepositoryClass {
 		List<User> list = new ArrayList<>();
 
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
 
-			PreparedStatement statement = connection.prepareStatement("" +
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement("" +
 					"select users.id,users.username,users.email,r.name from users " +
 					"join user_roles ur on users.id = ur.user_id " +
 					"join roles r on ur.role_id = r.id order by users.id");
@@ -189,9 +185,8 @@ class UserRepositoryClass {
 
 	public static boolean deleteUserById(Integer userID) {
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
-			PreparedStatement statement = connection.prepareStatement(
+
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
 					"DELETE FROM users where id = ?");
 			statement.setInt(1, userID);
 			int executeUpdate = statement.executeUpdate();

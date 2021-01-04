@@ -4,7 +4,9 @@ import com.example.demo.DemoApplication;
 import com.example.demo.model.Movie;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +22,8 @@ public class MovieRepository {
 		List<Movie> list = new ArrayList<>();
 
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
 
-			PreparedStatement statement = connection.prepareStatement("select * from movies");
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement("select * from movies");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				movie = new Movie();
@@ -56,10 +56,8 @@ public class MovieRepository {
 		Movie movie = new Movie();
 
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
 
-			PreparedStatement statement = connection.prepareStatement("select * from movies where movieID = ?");
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement("select * from movies where movieID = ?");
 			statement.setInt(1, id);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
@@ -89,10 +87,9 @@ public class MovieRepository {
 	public boolean createMovie(Movie movie) {
 
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
 
-			PreparedStatement statement = connection.prepareStatement(
+
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
 					"INSERT INTO `movies`(`titleEN`, `titleSK`, `genre`, `year`, `director`, `actors`, " +
 							"`description`, `secondTitleEN`, `secondTitleSK`, `src`, `srcImg`, `length`, `imdbSrc`, " +
 							"`dataTitle`)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -129,10 +126,9 @@ public class MovieRepository {
 	public boolean updateMovieById(Movie movie, int id) {
 
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
 
-			PreparedStatement statement = connection.prepareStatement(
+
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
 					"UPDATE movies SET titleEN = ?, titleSK = ?, genre = ?, year = ?, director = ?, actors = ?, " +
 							"description = ?, secondTitleEN = ?, secondTitleSK = ?, src = ?, srcImg = ?, length = ?, " +
 							"imdbSrc = ?, `dataTitle` = ? WHERE movieID = ?");
@@ -168,9 +164,8 @@ public class MovieRepository {
 
 	public boolean deleteMovieById(Integer movieID) {
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
-			PreparedStatement statement = connection.prepareStatement(
+
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
 					"DELETE FROM movies where movieID = ?");
 			statement.setInt(1, movieID);
 			int executeUpdate = statement.executeUpdate();

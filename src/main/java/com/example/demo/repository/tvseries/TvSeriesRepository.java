@@ -4,7 +4,9 @@ import com.example.demo.DemoApplication;
 import com.example.demo.model.TvSeries;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +21,7 @@ public class TvSeriesRepository {
 		List<TvSeries> list = new ArrayList<>();
 
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
-
-			PreparedStatement statement = connection.prepareStatement("select * from tvseries");
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement("select * from tvseries");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				tvSeries = new TvSeries(rs.getInt("serialID"), rs.getString("titleEN"),
@@ -44,10 +43,9 @@ public class TvSeriesRepository {
 		TvSeries tvSeries = new TvSeries();
 
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
 
-			PreparedStatement statement = connection.prepareStatement("select * from tvseries where serialID = ?");
+
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement("select * from tvseries where serialID = ?");
 			statement.setInt(1, id);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
@@ -75,10 +73,9 @@ public class TvSeriesRepository {
 	public boolean createSerial(TvSeries serial) {
 
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
 
-			PreparedStatement statement = connection.prepareStatement(
+
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
 					"INSERT INTO `tvseries` (`titleEN`, `titleSK`, `year`, `director`, `actors`," +
 							" `description`, `genre`, `secondTitleEN`, `secondTitleSK`, `src`, `srcImg`, `dataTitle`) " +
 							"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -113,10 +110,9 @@ public class TvSeriesRepository {
 	public boolean updateSerialById(TvSeries serial, int id) {
 
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
 
-			PreparedStatement statement = connection.prepareStatement(
+
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
 					"UPDATE tvseries SET titleEN = ?, titleSK = ?, genre = ?, year = ?, director = ?, actors = ?, " +
 							"description = ?, secondTitleEN = ?, secondTitleSK = ?, src = ?, srcImg = ?, " +
 							"`dataTitle` = ? WHERE serialID = ?");
@@ -150,9 +146,8 @@ public class TvSeriesRepository {
 
 	public boolean deleteSerialById(Integer serialId) {
 		try {
-			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
-			PreparedStatement statement = connection.prepareStatement(
+
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
 					"DELETE FROM tvseries where serialID = ?");
 			statement.setInt(1, serialId);
 			int executeUpdate = statement.executeUpdate();
