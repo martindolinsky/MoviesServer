@@ -21,7 +21,7 @@ public class MovieRepository {
 
 		try {
 			Connection connection = DriverManager.getConnection(
-					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.ROOT);
+					DemoApplication.URL, DemoApplication.ROOT, DemoApplication.PASSWORD);
 
 			PreparedStatement statement = connection.prepareStatement("select * from movies");
 			ResultSet rs = statement.executeQuery();
