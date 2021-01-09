@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class MovieController {
 	}
 
 	@DeleteMapping(path = "/delete/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> deleteMovieById(@PathVariable int id) throws JSONException {
 		JSONObject response = new JSONObject();
 		boolean b = movieRepository.deleteMovieById(id);
@@ -46,6 +48,7 @@ public class MovieController {
 	}
 
 	@PostMapping(path = "/create")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> createMovie(@RequestBody String body) throws JSONException, ParseException {
 		JSONObject response = new JSONObject();
 		Movie movie = new Movie();
@@ -74,6 +77,7 @@ public class MovieController {
 	}
 
 	@PostMapping(path = "/update/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> updateMovie(@PathVariable int id, @RequestBody String body) throws JSONException, ParseException {
 		JSONObject response = new JSONObject();
 		Movie movie;

@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class TvSeriesController {
 	}
 
 	@DeleteMapping(path = "/delete/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> deleteSerialById(@PathVariable int id) throws JSONException {
 		JSONObject response = new JSONObject();
 		boolean b = tvSeriesRepository.deleteSerialById(id);
@@ -46,6 +48,7 @@ public class TvSeriesController {
 	}
 
 	@PostMapping(path = "/create")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> createSerial(@RequestBody String body) throws JSONException, ParseException {
 		JSONObject response = new JSONObject();
 		TvSeries serial = new TvSeries();
@@ -73,6 +76,7 @@ public class TvSeriesController {
 	}
 
 	@PostMapping(path = "/update/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> updateSerial(@PathVariable int id, @RequestBody String body) throws JSONException, ParseException {
 		JSONObject response = new JSONObject();
 		TvSeries serial;

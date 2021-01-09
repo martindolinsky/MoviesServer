@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -133,6 +134,7 @@ public class UserController {
 
 	//	TODO: Fix deleting from db
 	@DeleteMapping(path = "/delete/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> deleteUserById(@PathVariable int id) throws JSONException {
 		JSONObject response = new JSONObject();
 		boolean b = UserRepositoryClass.deleteUserById(id);
