@@ -121,7 +121,7 @@ public class MovieController {
 	}
 
 	@PostMapping(path = "/comments/{movieID}/create")
-	@PreAuthorize("hasRole('ADMIN')")
+
 	public ResponseEntity<?> createComment(@PathVariable int movieID, @RequestBody String body) throws JSONException, SQLException {
 		JSONObject response = new JSONObject();
 		Comment comment = new Comment();

@@ -117,7 +117,6 @@ public class TvSeriesController {
 	}
 
 	@PostMapping(path = "/comments/{serialID}/create")
-	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> createComment(@PathVariable int serialID, @RequestBody String body) throws JSONException, SQLException {
 		JSONObject response = new JSONObject();
 		Comment comment = new Comment();
