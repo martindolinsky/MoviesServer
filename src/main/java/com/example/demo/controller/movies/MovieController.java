@@ -1,5 +1,7 @@
 package com.example.demo.controller.movies;
 
+import com.example.demo.DemoApplication;
+import com.example.demo.model.Comment;
 import com.example.demo.model.Movie;
 import com.example.demo.repository.movies.MovieRepository;
 import org.apache.tomcat.util.json.ParseException;
@@ -8,8 +10,14 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -78,7 +86,7 @@ public class MovieController {
 
 	@PostMapping(path = "/update/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> updateMovie(@PathVariable int id, @RequestBody String body) throws JSONException, ParseException {
+	public ResponseEntity<?> updateMovie(@PathVariable int id, @RequestBody String body) throws JSONException {
 		JSONObject response = new JSONObject();
 		Movie movie;
 
@@ -106,4 +114,51 @@ public class MovieController {
 		}
 		return null;
 	}
+
+	@GetMapping(path = "/comments/{id}")
+	public List<Comment> getRelatedComments(@PathVariable int id) {
+		return movieRepository.getRelatedComments(id);
+	}
+
+	@PostMapping(path = "/comments/{movieID}/create")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> createComment(@PathVariable int movieID, @RequestBody String body) throws JSONException, SQLException {
+		JSONObject response = new JSONObject();
+		Comment comment = new Comment();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String userName = auth.getName();
+		int id = 0;
+
+		PreparedStatement userStatement = DemoApplication.getConnection().prepareStatement(
+				"SELECT * FROM users where username like ?");
+		userStatement.setString(1, userName);
+		ResultSet rs = userStatement.executeQuery();
+		while (rs.next()) {
+			id = rs.getInt("id");
+		}
+
+		try {
+			System.out.println("BODY: \n" + body);
+			JSONObject job = new JSONObject(body);
+			response = new JSONObject();
+			comment = new Comment();
+			comment.setUserId(id);
+			comment.setDate(new Timestamp(System.currentTimeMillis()).toString());
+			comment.setMessage(job.getString("message"));
+			comment.setMovieId(movieID);
+
+			boolean b = movieRepository.createComment(comment);
+			if (b) {
+				response.put("success", "Comment created with message: " + comment.getMessage());
+				return ResponseEntity.status(200).body(response.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("error", "Comment with message: " + comment.getMessage() + " not created");
+			return ResponseEntity.status(400).body(response.toString());
+		}
+		return null;
+	}
+
+
 }

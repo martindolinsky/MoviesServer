@@ -1,6 +1,7 @@
 package com.example.demo.repository.movies;
 
 import com.example.demo.DemoApplication;
+import com.example.demo.model.Comment;
 import com.example.demo.model.Movie;
 import org.springframework.stereotype.Repository;
 
@@ -87,8 +88,6 @@ public class MovieRepository {
 	public boolean createMovie(Movie movie) {
 
 		try {
-
-
 			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
 					"INSERT INTO `movies`(`titleEN`, `titleSK`, `genre`, `year`, `director`, `actors`, " +
 							"`description`, `secondTitleEN`, `secondTitleSK`, `src`, `srcImg`, `length`, `imdbSrc`, " +
@@ -172,6 +171,61 @@ public class MovieRepository {
 
 			if (executeUpdate == 1) {
 				System.out.println("Movie is deleted with ID: " + movieID);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public List<Comment> getRelatedComments(int id) {
+		Comment comment;
+		List<Comment> list = new ArrayList<>();
+
+		try {
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
+					"select * from comments where movieID like ?");
+			statement.setInt(1, id);
+			ResultSet rs = statement.executeQuery();
+
+
+			while (rs.next()) {
+				comment = new Comment();
+				comment.setId(rs.getInt("commentID"));
+				comment.setUserId(rs.getInt("userID"));
+				comment.setDate(rs.getString("date"));
+				comment.setMessage(rs.getString("message"));
+				comment.setMovieId(rs.getInt("movieID"));
+				comment.setSerialID(rs.getInt("serialID"));
+
+				list.add(comment);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public boolean createComment(Comment comment) {
+
+
+		try {
+			PreparedStatement statement = DemoApplication.getConnection().prepareStatement(
+					"INSERT INTO `comments`(`userID`, `date`, `message`, `movieID`)  " +
+							"VALUES (?, ?, ?, ?)");
+
+
+			statement.setInt(1, comment.getUserId());
+			statement.setString(2, comment.getDate());
+			statement.setString(3, comment.getMessage());
+			statement.setInt(4, comment.getMovieId());
+
+			int executeUpdate = statement.executeUpdate();
+
+			if (executeUpdate == 1) {
+				System.out.println("Comment is created: " + comment.getMessage());
 				return true;
 			}
 		} catch (Exception e) {
