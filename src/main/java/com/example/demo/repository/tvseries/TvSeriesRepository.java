@@ -173,6 +173,9 @@ public class TvSeriesRepository {
 			statement.setInt(1, id);
 			ResultSet rs = statement.executeQuery();
 
+			PreparedStatement preparedStatement = DemoApplication.getConnection().prepareStatement(
+					"select * from users where id like ?");
+
 
 			while (rs.next()) {
 				comment = new Comment();
@@ -182,6 +185,11 @@ public class TvSeriesRepository {
 				comment.setMessage(rs.getString("message"));
 				comment.setMovieId(rs.getInt("movieID"));
 				comment.setSerialID(rs.getInt("serialID"));
+				preparedStatement.setInt(1, rs.getInt("userID"));
+				ResultSet resultSet = preparedStatement.executeQuery();
+				if (resultSet.next()) {
+					comment.setUsername(resultSet.getString("username"));
+				}
 
 				list.add(comment);
 			}

@@ -28,6 +28,9 @@ public class Comment {
 	@Column(name = "serialID")
 	private int serialID;
 
+	@Transient
+	private String username;
+
 	public Comment() {
 	}
 
@@ -78,6 +81,14 @@ public class Comment {
 
 	public void setSerialID(int serialID) {
 		this.serialID = serialID;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@Override
